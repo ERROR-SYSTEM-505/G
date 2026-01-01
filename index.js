@@ -1,23 +1,28 @@
 /**
- * Goat Bot Render Deployment Fix by Eren
+ * Goat Bot Render Deployment Fix by SaGor 
  */
 
 const express = require("express");
 const { spawn } = require("child_process");
+const path = require("path");
 const log = require("./logger/log.js");
 
 // === Express server to keep Render service alive ===
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/", (req, res) => {
-        res.send("EREN BOT RUNNING \n author: Eren \n Status: smooth 🥵");
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.listen(PORT, () => {
-        console.log(`✅ Server running at http://localhost:${PORT}`);
+// ======================
+// 🚀 EXPRESS SERVER
+// ======================
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });
-
 // === Start the Goat bot process ===
 function startProject() {
         const child = spawn("node", ["Goat.js"], {
