@@ -1,7 +1,7 @@
 {
 	"name": "goat-bot-v2",
 	"version": "1.5.35",
-	"description": "A simple Bot chat messenger using personal account. Made by NTKhang.",
+	"description": "A simple Bot chat messenger using personal account. Made by SaGor.",
 	"main": "index.js",
 	"engines": {
 		"node": "18.x",
@@ -69,13 +69,13 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/ntkhang03/Goat-Bot-V2.git"
+		"url": "git+https://github.com/SAGOR-KINGx/GOAT-V2.git"
 	},
 	"keywords": [],
 	"bugs": {
-		"url": "https://github.com/ntkhang03/Goat-Bot-V2/issues"
+		"url": "https://github.com/SAGOR-KINGx/GOAT-V2/issues"
 	},
-	"homepage": "https://github.com/ntkhang03/Goat-Bot-V2#readme",
+	"homepage": "https://github.com/SAGOR-KINGx/GOAT-V3#readme",
 	"devDependencies": {
 		"eslint": "^8.2.0",
 		"eslint-config-airbnb": "^19.0.4",
