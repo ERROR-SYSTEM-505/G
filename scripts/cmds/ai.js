@@ -1,63 +1,47 @@
 const axios = require("axios");
-const gTTS = require("gtts");
-const fs = require("fs");
-const path = require("path");
 
 module.exports = {
   config: {
     name: "ai",
-    aliases: [],
+    aliases: ["gemini"],
     version: "1.0",
     author: "SaGor",
+    countDown: 5,
     role: 0,
-    shortDescription: "Ask AI and get cute TTS voice reply",
-    longDescription: "GPT response converted to TTS audio",
-    category: "fun"
+    shortDescription: {
+      en: "AI chat using Gemini API"
+    },
+    description: {
+      en: "Chat with AI using gemini-api-by-sagor"
+    },
+    category: "ai",
+    guide: {
+      en: "{p}ai <your question>"
+    }
   },
 
-  onStart: async function ({ api, event, args }) {
-    const { threadID, body } = event;
-
+  onStart: async function ({ message, args }) {
     try {
-      // 1️⃣ Get user input
-      const userText = args.join(" ") || body.split(" ").slice(1).join(" ");
-      if (!userText) return api.sendMessage("❌ Please provide text for AI.", threadID);
+      const text = args.join(" ");
+      if (!text) {
+        return message.reply("Please type something.\nExample: ai Hello");
+      }
 
-      // 2️⃣ Call GPT API
-      const gptRes = await axios.get("https://api.dreaded.site/api/chatgpt", {
-        params: { text: userText },
-        timeout: 20000
-      });
+      message.reply("Thinking...");
 
-      const gptText = gptRes.data?.result?.prompt;
-      if (!gptText) return api.sendMessage("❌ Failed to get GPT response.", threadID);
+      const url = `https://gemini-api-by-sagor.vercel.app/api/chat?text=${encodeURIComponent(text)}`;
+      const res = await axios.get(url);
 
-      // 3️⃣ Ensure assets folder exists
-      const assetsDir = path.join(__dirname, "../assets");
-      if (!fs.existsSync(assetsDir)) fs.mkdirSync(assetsDir, { recursive: true });
+      const reply =
+        res.data?.response ||
+        res.data?.reply ||
+        res.data?.result ||
+        "No response from API";
 
-      // 4️⃣ Create TTS
-      const fileName = `tts-${Date.now()}.mp3`;
-      const filePath = path.join(assetsDir, fileName);
+      return message.reply(reply);
 
-      const gtts = new gTTS(gptText, "en"); // language: English
-      gtts.save(filePath, async (err) => {
-        if (err) {
-          console.error("❌ TTS error:", err);
-          return api.sendMessage("❌ Error generating TTS audio.", threadID);
-        }
-
-        // 5️⃣ Send audio
-        await api.sendMessage(
-          { body: "🎙 AI Response:", attachment: fs.createReadStream(filePath) },
-          threadID,
-          () => fs.unlink(filePath, () => {}) // cleanup
-        );
-      });
-
-    } catch (error) {
-      console.error("❌ AI TTS error:", error.message || error);
-      await api.sendMessage("❌ Something went wrong with AI TTS.", threadID);
+    } catch (err) {
+      return message.reply("Error occurred while contacting AI API.");
     }
   }
 };
